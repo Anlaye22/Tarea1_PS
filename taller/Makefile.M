@@ -1,12 +1,18 @@
+# Variables
 CC = gcc
-CFLAGS = -Wall
-SOURCES = Main.c Perimetro.c Area.c Superficie.c Volumen.c
-OBJECTS = $(SOURCES:.c=.o)
-ASSEMBLY = $(SOURCES:.c=.s)
-all: $(OBJECTS) $(ASSEMBLY)
+CFLAGS = -Wall -g  # Activar todas las advertencias y modo de depuración
+TARGET = sistema   # Nombre del ejecutable
+
+SRCS = main.c R_sistema.c Perimetro.c Area.c Superficie.c Volumen.c
+
+OBJS = $(SRCS:.c=.o)
+
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET)
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-%.s: %.c
-	$(CC) $(CFLAGS) -S $< -o $@
+
+.PHONY: clean
 clean:
-	rm -f $(OBJECTS) $(ASSEMBLY)
+	rm -f $(OBJS) $(TARGET)
