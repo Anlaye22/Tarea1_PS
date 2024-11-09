@@ -6,6 +6,7 @@
 #include "Area.h"
 #include "Superficie.h"
 #include "Volumen.h"
+#include "R_sistema.c"
 
 int preguntarFiguraGeometrica(char* figuras[]);
 int preguntarMetodo(int indice, char* figura);
@@ -18,13 +19,33 @@ bool preguntarContinuar();
 
 int main(){
     char *figuras[200] = {"Triangulo", "Paralelogramo", "Cuadrado", "Rectangulo", "Rombo", "Trapecio", "Circulo", "Poligono Regular", "Cubo", "Cuboide", "Cilindro Recto", "Esfera", "Cono Circular Recto"};
+    char usuario[MAX_LINE_LENGTH];
+
+    // Solicitar inicio de sesión
+    if (!iniciar_sesion(usuario)) {
+        printf("Acceso denegado. Cerrando el sistema.\n");
+        return 1;
+    }
+
     bool continuar = true;
     do {
         int indiceFigura = preguntarFiguraGeometrica(figuras);
-        int metodo = preguntarMetodo(indiceFigura, figuras[indiceFigura-1]);
+        int metodo = preguntarMetodo(indiceFigura, figuras[indiceFigura - 1]);
+        
+        // Registrar la figura seleccionada en la bitácora
+        registrar_bitacora(usuario, figuras[indiceFigura - 1]);
+
+        // Calcular el método seleccionado
         calcular(metodo, indiceFigura);
+
         continuar = preguntarContinuar();
+        if (!continuar) {
+            registrar_bitacora(usuario, "Salida del sistema");
+            printf("Saliendo del sistema...\n");
+        }
     } while (continuar);
+
+    return 0;
 }
 
 int preguntarFiguraGeometrica(char* figuras[]){
